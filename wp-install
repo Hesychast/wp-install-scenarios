@@ -1,0 +1,26 @@
+#!/bin/bash
+
+echo "Put a website's directory."
+read -r directory
+
+if [ ! -d "$directory" ]; then
+    mkdir "$directory" && cd $_
+
+    wp core download --skip-content
+
+    echo "Put a database name, database user, and database password if you need."
+    read -r dbname dbuser
+
+    wp config create --dbname="$dbname" --dbuser="$dbuser" --extra-php <<PHP
+define('FS_METHOD', 'direct');
+PHP
+
+    echo "Put a website's URL, admin's name, password, email, and title."
+    read -r url admin_name admin_password admin_email title
+
+    wp core install --url="$url" --admin_user="$admin_name" --admin_password="$admin_password" --admin_email="$admin_email" --title="$title"
+
+    sudo chown -R $USER:daemon ../"$directory" && sudo chmod -R 775 ../"$directory"
+else
+    echo "ERROR: Specified directory already exists."
+fi

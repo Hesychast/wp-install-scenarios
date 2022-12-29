@@ -1,0 +1,10 @@
+#!/bin/bash
+
+echo "Put a path to theme zip."
+read -r path
+
+if [ ! -f "$path" ]; then
+    echo "Theme zip file not found."
+else
+    wp theme install "$path" --activate
+fi
